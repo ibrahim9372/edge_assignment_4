@@ -70,11 +70,11 @@ Run every command from the repository root. You can run the whole pipeline with 
 
 | Step | Command | Output |
 |---|---|---|
-| 1. Teacher | `python -m q1_kd.train_teacher --epochs 30` | `checkpoints/teacher/resnet50_cifar100.pt` |
-| 2. Baseline students | `python -m q1_kd.train_baseline --arch all --epochs 40` | `checkpoints/baseline/*.pt` |
-| 3. Distilled students | `python -m q1_kd.train_kd --arch all --epochs 40 --T 4 --alpha 0.3 --beta 1` | `checkpoints/kd/*.pt` |
-| 4. NAS search | `python -m q2_nas.search_optuna --trials 60 --epochs 6` | `results/q2/search_history.{csv,json}`, `results/q2/best_arch.json` |
-| 5. Train best NAS model | `python -m q2_nas.train_best --epochs 80` | `checkpoints/nas/nas_best_cifar10.pt` |
+| 1. Teacher | `python -m q1_kd.train_teacher --epochs 15` | `checkpoints/teacher/resnet50_cifar100.pt` |
+| 2. Baseline students | `python -m q1_kd.train_baseline --arch all --epochs 30` | `checkpoints/baseline/*.pt` |
+| 3. Distilled students | `python -m q1_kd.train_kd --arch all --epochs 30 --T 4 --alpha 0.3 --beta 1` | `checkpoints/kd/*.pt` |
+| 4. NAS search | `python -m q2_nas.search_optuna --trials 40 --epochs 5` | `results/q2/search_history.{csv,json}`, `results/q2/best_arch.json` |
+| 5. Train best NAS model | `python -m q2_nas.train_best --epochs 50` | `checkpoints/nas/nas_best_cifar10.pt` |
 | 6. ONNX export | `python -m inference.export_onnx --all` | `onnx/{baseline,kd,nas}/*.onnx` |
 | 7. PyTorch inference | `python -m inference.infer --all --testset` | console |
 | 8. ONNX Runtime inference | `python -m inference.infer_onnx --all --testset` | console |
@@ -97,4 +97,25 @@ Every script supports `--smoke`, which runs a 1-epoch run on a tiny subset to ch
 
 ## Results
 
-See `results/` and the technical report in `report/`.
+The full write-up is in `report/Technical_Report.pdf`. Raw numbers are in `results/`.
+
+**Q1 — CIFAR-100, top-1 accuracy (%)**. The ResNet-50 teacher, fine-tuned from ImageNet weights for 15 epochs, reaches **85.15**.
+
+| Student | Params | Baseline | KD | Gain | ONNX Runtime CPU latency (1 thread) |
+|---|---|---|---|---|---|
+| MobileNetV2 | 2.35 M | 70.56 | **73.10** | +2.54 | 1.76 ms |
+| SqueezeNet | 0.78 M | 60.79 | **61.42** | +0.63 | 0.42 ms |
+| EfficientNet-Lite0 | 3.50 M | 71.71 | **74.19** | +2.48 | 2.32 ms |
+
+The distillation settings were T = 4, α = 0.3 and β = 1 (FitNets hint from teacher layer3). Baselines and distilled students used identical training settings (30 epochs).
+
+**Q2 — Hardware-aware NAS (Optuna TPE, CIFAR-10).** The deployment limits were ≤ 2 ms latency (batch 1, 1 thread), ≤ 1 MB size and ≤ 64 MB peak inference memory. The search ran 40 trials, and 25 candidates were rejected by the limits.
+The best architecture is `res32 stem24 silu [conv3x3 c32 d3 | conv5x5 c32 d3 | conv3x3 c160 d1] head256`, with 0.194 M parameters, 0.76 MB, 1.91 ms in PyTorch and 0.85 ms in ONNX Runtime.
+Retrained from scratch for 50 epochs, it reaches **89.80 % CIFAR-10 test accuracy**.
+
+All ONNX exports match PyTorch outputs to within 6e-6. ONNX Runtime accuracy equals PyTorch accuracy, and ONNX Runtime is 2.2–6.6× faster than eager PyTorch on the CPU.
+
+### Note on the run
+
+The pipeline was run with `run_all.ps1`. To save time before the deadline, the NAS branch (stages 4–5) ran in parallel with student training (stages 2–3).
+Training uses the standard NCHW memory layout: on the RTX 2080 used here, channels_last was ~15× slower.

@@ -1,0 +1,4 @@
+arch,teacher_top1,baseline_top1,kd_top1,baseline_top5,kd_top5,params_M,ort_cpu_latency_ms,kd_gain_top1
+efficientnet_lite0,85.16,71.71,74.19,92.81,93.86,3.499,2.321,2.48
+mobilenetv2,85.16,70.56,73.1,92.82,94.13,2.352,1.762,2.54
+squeezenet,85.16,60.79,61.42,87.61,87.86,0.777,0.425,0.63

@@ -1,0 +1,25 @@
+C:\semester_7\Edge_computing\Assignment-4\inference\export_onnx.py:32: DeprecationWarning: You are using 
+the legacy TorchScript-based ONNX export. Starting in PyTorch 2.9, the new torch.export-based ONNX exporter has become 
+the default. Learn more about the new export logic: https://docs.pytorch.org/docs/stable/onnx_export.html. For 
+exporting control flow: https://pytorch.org/tutorials/beginner/onnx/export_control_flow_model_to_onnx_tutorial.html
+ 
+  torch.onnx.export(model, dummy, out, input_names=["input"], output_names=["logits"],
+C:\semester_7\Edge_computing\Assignment-4\q1_kd\models\efficientnet_lite0.py:54: TracerWarning: Converting a tensor to 
+a Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value 
+will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  return (logits, feat) if return_features else logits
+baseline/efficientnet_lite0_cifar100     -> onnx\baseline/efficientnet_lite0_cifar100.onnx  (13.31 MB, max|torch-ort|=2.38e-06)
+C:\semester_7\Edge_computing\Assignment-4\q1_kd\models\mobilenetv2.py:71: TracerWarning: Converting a tensor to a 
+Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value 
+will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  return (logits, feat) if return_features else logits
+baseline/mobilenetv2_cifar100            -> onnx\baseline/mobilenetv2_cifar100.onnx  (8.95 MB, max|torch-ort|=4.77e-06)
+C:\semester_7\Edge_computing\Assignment-4\q1_kd\models\squeezenet.py:52: TracerWarning: Converting a tensor to a 
+Python boolean might cause the trace to be incorrect. We can't record the data flow of Python values, so this value 
+will be treated as a constant in the future. This means that the trace might not generalize to other inputs!
+  return (logits, feat) if return_features else logits
+baseline/squeezenet_cifar100             -> onnx\baseline/squeezenet_cifar100.onnx  (2.97 MB, max|torch-ort|=3.81e-06)
+kd/efficientnet_lite0_cifar100           -> onnx\kd/efficientnet_lite0_cifar100.onnx  (13.31 MB, max|torch-ort|=4.77e-06)
+kd/mobilenetv2_cifar100                  -> onnx\kd/mobilenetv2_cifar100.onnx  (8.95 MB, max|torch-ort|=3.58e-06)
+kd/squeezenet_cifar100                   -> onnx\kd/squeezenet_cifar100.onnx  (2.97 MB, max|torch-ort|=4.77e-06)
+nas/nas_best_cifar10                     -> onnx\nas/nas_best_cifar10.onnx  (0.74 MB, max|torch-ort|=5.84e-06)

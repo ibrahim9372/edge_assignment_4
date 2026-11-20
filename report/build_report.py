@@ -7,6 +7,7 @@ rendered from the real training / inference logs in results/logs/.
     python -m report.build_report            # writes report/Technical_Report.html and .pdf
 """
 import base64
+import re
 import glob
 import html
 import json
@@ -39,14 +40,16 @@ def read_log(path):
 
 def console_png(log_path, out_png, title, keep=None, max_lines=34):
     """Render the (filtered) tail of a real console log as a terminal-style image."""
-    lines = [l for l in read_log(log_path).split("\n") if l.strip()
-             and "Warning" not in l and "warn(" not in l and "torch.onnx.export(" not in l
-             and "return (logits" not in l]
+    # library warnings (multi-line) are kept in the raw logs but left out of the screenshots
+    warn = re.compile(r"Warning|warn\(|^C:\\|^\s+(torch\.onnx|return \(|sched\.step)|the legacy TorchScript|"
+                      r"the default\. Learn|exporting control flow|Python boolean|will be treated as a constant|"
+                      r"lr_scheduler|order: `optimizer|value of the learning|^https://")
+    lines = [l for l in read_log(log_path).split("\n") if l.strip() and not warn.search(l)]
     if keep:
-        lines = [l for l in lines if any(k in l for k in keep)]
+        lines = [l for l in lines if re.search(keep, l)]
     lines = lines[-max_lines:]
     lines = [l if len(l) <= 150 else l[:147] + "..." for l in lines]
-    h = 0.6 + 0.19 * (len(lines) + 2)
+    h = 0.5 + 0.158 * (len(lines) + 2)
     fig = plt.figure(figsize=(13, h))
     fig.patch.set_facecolor("#1e1e1e")
     fig.text(0.01, 1 - 0.25 / h, f"PS C:\\...\\Assignment-4>  {title}", color="#4ec9b0",
@@ -77,13 +80,22 @@ def table(df, floatfmt="{:.2f}"):
     return f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>"
 
 
+def cpu_name():
+    try:
+        import winreg
+        k = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, "\\".join(["HARDWARE", "DESCRIPTION", "System", "CentralProcessor", "0"]))
+        return winreg.QueryValueEx(k, "ProcessorNameString")[0].strip()
+    except Exception:
+        return platform.processor()
+
+
 def env_info():
     try:
         import torch, onnxruntime, optuna
         gpu = torch.cuda.get_device_name(0) if torch.cuda.is_available() else "none"
         return {"Python": platform.python_version(), "PyTorch": torch.__version__, "CUDA GPU": gpu,
                 "ONNX Runtime": onnxruntime.__version__, "Optuna": optuna.__version__,
-                "OS": f"{platform.system()} {platform.release()}", "CPU": platform.processor() or "AMD Ryzen 5 5600X"}
+                "OS": f"{platform.system()} {platform.release()}", "CPU": cpu_name()}
     except Exception:
         return {}
 
@@ -97,18 +109,15 @@ def build():
     best = jload(f"{R}/q2/best_arch.json", {})
     nasfinal = jload(f"{R}/q2/nas_best_final.json", {})
     hist = pd.read_csv(f"{R}/q2/search_history.csv") if os.path.exists(f"{R}/q2/search_history.csv") else None
-    kd_args = (jload(f"{R}/q1/kd_summary.json") or [{}])
-    kd_sum = {d["arch"]: d for d in kd_args} if isinstance(kd_args, list) else {}
-    base_sum = {d["arch"]: d for d in (jload(f"{R}/q1/baseline_summary.json") or [])}
 
     # console captures from the real logs
     shots = []
     L = f"{R}/logs"
-    spec = [("01_teacher.log", "python -m q1_kd.train_teacher --epochs 30", None),
-            ("02_baseline.log", "python -m q1_kd.train_baseline --arch all --epochs 40", ["===", "ep  ", "top1="]),
-            ("03_kd.log", "python -m q1_kd.train_kd --arch all --epochs 40", ["===", "ep  ", "top1="]),
-            ("04_nas_search.log", "python -m q2_nas.search_optuna --trials 60 --epochs 6", ["[trial"]),
-            ("05_nas_train.log", "python -m q2_nas.train_best --epochs 80", None),
+    spec = [("01_teacher.log", "python -m q1_kd.train_teacher --epochs 15", None),
+            ("02_baseline.log", "python -m q1_kd.train_baseline --arch all --epochs 30", r"===|ep +(1|10|20|30)/|^baseline "),
+            ("03_kd.log", "python -m q1_kd.train_kd --arch all --epochs 30", r"===|ep +(1|10|20|30)/|^kd "),
+            ("04_nas_search.log", "python -m q2_nas.search_optuna --trials 40 --epochs 5", r"\[trial"),
+            ("05_nas_train.log", "python -m q2_nas.train_best --epochs 50", None),
             ("06_export_onnx.log", "python -m inference.export_onnx --all", None),
             ("07_infer_torch.log", "python -m inference.infer --all --testset", None),
             ("08_infer_onnx.log", "python -m inference.infer_onnx --all --testset", None),
@@ -122,7 +131,8 @@ def build():
     s = []
     s.append("""<h1>Assignment 4 — Technical Report</h1>
 <p class='sub'>Edge Computing &amp; Intelligent Systems · Knowledge Distillation and Hardware-Aware Neural Architecture Search</p>
-<p class='sub'>Name: ____________ &nbsp;&nbsp; Roll No: ____________ &nbsp;&nbsp; Section: ____</p>""")
+<p class='sub'>Name: Muhammad Ibrahim &nbsp;&nbsp; Roll No: 23I-0083 &nbsp;&nbsp; Class: AI-A</p>
+<p class='sub'>GitHub: https://github.com/ibrahim9372/edge_assignment_4</p>""")
 
     s.append("<h2>1. Overview</h2><p>This report describes two pipelines for running deep models on resource-constrained edge devices. "
              "<b>Question 1</b> transfers knowledge from a large ResNet-50 teacher into three lightweight CNNs "
@@ -143,11 +153,11 @@ def build():
              "<p>ResNet-50 uses bottleneck residual blocks in four stages of [3, 4, 6, 3] blocks (23.7 M parameters). "
              "The ImageNet stem (7×7 stride-2 conv followed by max-pool) shrinks a 32×32 CIFAR image by 4× before the first residual stage. "
              "We replaced it with a 3×3 stride-1 conv and no max-pool, so the stages run at 32, 16, 8 and 4 pixels. "
-             "As agreed, the teacher is <b>fine-tuned</b>: every layer starts from torchvision's ImageNet weights. "
+             "The teacher is <b>fine-tuned</b>: every layer starts from torchvision's ImageNet weights. "
              "The new 3×3 stem is initialised from the centre 3×3 of the pretrained 7×7 kernels, and the 100-way classifier is new. "
              "All layers are then trained on CIFAR-100 with SGD (Nesterov momentum 0.9), weight decay 5e-4, "
              "1 warm-up epoch followed by cosine learning-rate decay, and batch size 128. "
-             "The checkpoint is stored in fp16 (about 45 MB) to keep it under GitHub's file limit. "
+             "The checkpoint is stored in fp16 (about 48 MB) to keep it under GitHub's file limit. "
              "Reloading it gives the same accuracy (see the table).</p>")
     if teacher:
         t = teacher
@@ -184,15 +194,12 @@ def build():
              "<li><b>Feature-based distillation</b> (FitNets): the student's 8×8 hint feature map F<sub>s</sub> passes through a regressor r "
              "(1×1 conv + BN) that maps it to the teacher's 1024 channels. It is then matched to the teacher's layer3 output F<sub>t</sub> (1024×8×8) with MSE. "
              "If the spatial sizes differ, both maps are average-pooled to the smaller one. The adapter is only used during training and is not part of the deployed student.</li></ul>")
-    if kd_sum:
-        a = next(iter(kd_sum.values()))
-    ka = (jload("checkpoints_args_kd.json") or {})
     s.append("<p>Hyper-parameters used: T = 4, α = 0.3, β = 1.0. Flags turn each component off for ablations "
              "(<code>--no-soft</code>, <code>--no-feature</code>).</p>")
 
     s.append("<h3>2.4 Baseline vs. distillation training (q1_kd/train_baseline.py, q1_kd/train_kd.py)</h3>"
              "<p>The baseline pipeline trains each student with hard-label cross-entropy only and never loads the teacher. "
-             "The distillation pipeline uses the same optimiser, schedule, number of epochs (40), batch size, augmentation and random seed, "
+             "The distillation pipeline uses the same optimiser, schedule, number of epochs (30), batch size, augmentation and random seed, "
              "so any accuracy difference comes from distillation alone. Settings: SGD with Nesterov momentum 0.9, learning rate 0.1, cosine decay with 1 warm-up epoch, "
              "weight decay 5e-4, batch size 128, fp16 autocast.</p>")
     if kdcmp is not None:
@@ -246,7 +253,7 @@ def build():
              "sampled every 0.5 ms by a psutil thread. psutil works on Windows, Linux and macOS; on other platforms this value is skipped.</li>"
              "<li><b>Constraint check</b>: any candidate that breaks a deployment limit is <b>rejected</b> straight away and recorded as pruned with the reason. "
              "Rejected candidates take only about 2 s and no GPU time.</li>"
-             "<li>Feasible candidates are trained for a short proxy budget (6 epochs on 45k CIFAR-10 training images) and "
+             "<li>Feasible candidates are trained for a short proxy budget (5 epochs on 45k CIFAR-10 training images) and "
              "validated on a 5k held-out split. The test set is never used during the search. Validation top-1 is the objective that TPE maximises.</li></ol>")
     if best:
         c = best["constraints"]
@@ -290,7 +297,14 @@ def build():
         cols = [c for c in ["model", "top1", "ort_top1", "params_M", "MMACs", "onnx_MB", "pt_cpu_latency_ms",
                             "ort_cpu_latency_ms", "ort_speedup_vs_pt", "pt_peak_mem_MB", "ort_peak_mem_MB"] if c in bench.columns]
         thr = [c for c in bench.columns if c.startswith("ort_throughput")]
-        s.append(table(bench[cols + thr]))
+        short = {"top1": "top-1", "ort_top1": "ORT top-1", "params_M": "params M", "MMACs": "MMACs",
+                 "onnx_MB": "ONNX MB", "pt_cpu_latency_ms": "PT ms", "ort_cpu_latency_ms": "ORT ms",
+                 "ort_speedup_vs_pt": "ORT speed-up", "pt_peak_mem_MB": "PT mem MB",
+                 "ort_peak_mem_MB": "ORT mem MB"}
+        short.update({c: "ORT img/s (b32)" for c in thr})
+        s.append("<div class='small'>" + table(bench[cols + thr].rename(columns=short)) + "</div>")
+        s.append("<p class='note'>PT/ORT ms = median latency at batch 1 on 1 CPU thread; ORT img/s = ONNX Runtime throughput "
+                 "at batch 32 on all physical cores; mem = peak RSS growth during inference.</p>")
         s.append(bench_discussion(bench))
 
     # ------------------------------------------------------------------ screenshots
@@ -334,7 +348,7 @@ table{border-collapse:collapse;margin:8px 0;font-size:8.6pt;width:100%}th,td{bor
 th{background:#eef2f8}tr:nth-child(even) td{background:#fafbfc}code{background:#f2f3f5;padding:0 3px;border-radius:3px;font-size:9pt}
 .eq{background:#f5f7fb;border-left:3px solid #2a6fdb;padding:6px 10px;margin:8px 0;font-family:Cambria,serif}
 figure{margin:10px 0;text-align:center;page-break-inside:avoid}figcaption{font-size:9pt;color:#555}
-.missing{color:#b00}.refs{font-size:9pt}"""
+.missing{color:#b00}.small table{font-size:7.4pt}.small td,.small th{padding:2px 4px}.note{font-size:8.5pt;color:#555}.refs{font-size:9pt}"""
     doc = f"<!doctype html><html><head><meta charset='utf-8'><title>Assignment 4 Technical Report</title><style>{css}</style></head><body>{''.join(s)}</body></html>"
     html_path = os.path.abspath(f"{OUT_DIR}/Technical_Report.html")
     with open(html_path, "w", encoding="utf-8") as f:
@@ -378,8 +392,14 @@ def bench_discussion(b):
             "accuracy (compare the top1 and ort_top1 columns). ")
     if len(nas):
         n = nas.iloc[0]
-        txt += (f"The NAS model is the smallest and fastest deployable network ({n.params_M:.3f} M parameters, "
-                f"{n.ort_cpu_latency_ms:.2f} ms with ONNX Runtime). Its design was driven directly by the latency, size and memory measured on this CPU.")
+        txt += (f"The NAS model is the smallest deployable network ({n.params_M:.3f} M parameters, {n.onnx_MB:.2f} MB as ONNX) "
+                f"and runs in {n.ort_cpu_latency_ms:.2f} ms with ONNX Runtime, well inside its 2 ms budget. It solves the easier 10-class "
+                f"CIFAR-10 task, so its accuracy cannot be compared directly with the CIFAR-100 students. Its design came directly from the "
+                f"latency, size and memory measured on this CPU.")
+    txt += (" <i>Note on memory:</i> peak inference memory is measured as the growth of process RSS during inference. "
+            "PyTorch's CPU allocator reuses memory already reserved while the checkpoint was loaded, so for some PyTorch "
+            "models the measured growth is close to zero. The ONNX Runtime numbers (arena allocation at the first run) show the "
+            "real activation-memory footprint more clearly.")
     return txt + "</p>"
 
 

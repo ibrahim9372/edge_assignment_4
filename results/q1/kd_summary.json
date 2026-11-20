@@ -1,0 +1,26 @@
+[
+  {
+    "arch": "mobilenetv2",
+    "mode": "kd",
+    "top1": 73.11,
+    "top5": 94.13,
+    "loss": 1.2400859802246094,
+    "train_minutes": 15.0
+  },
+  {
+    "arch": "squeezenet",
+    "mode": "kd",
+    "top1": 61.43,
+    "top5": 87.84,
+    "loss": 1.920450634765625,
+    "train_minutes": 9.1
+  },
+  {
+    "arch": "efficientnet_lite0",
+    "mode": "kd",
+    "top1": 74.19,
+    "top5": 93.87,
+    "loss": 1.2773093231201171,
+    "train_minutes": 16.3
+  }
+]

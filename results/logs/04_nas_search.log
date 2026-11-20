@@ -1,0 +1,91 @@
+[I 2026-11-20 14:22:39,633] A new study created in memory with name: hw_aware_nas
+ 
+[trial   0] REJECTED latency 3.03ms > 2.0ms  :: res28 stem16 relu6 [conv7x7 c32 d3 | dwsep3x3 c96 d2 | dwsep7x7 c96 d3] head256
+[trial   1] val_acc=76.32  lat=1.71ms size=0.499MB mem=7.9MB :: res28 stem24 silu [conv3x3 c16 d2 | conv5x5 c32 d3 | dwsep3x3 c96 d3] head256
+[trial   2] REJECTED latency 3.31ms > 2.0ms; size 5.08MB > 1.0MB  :: res32 stem32 hardswish [conv7x7 c24 d2 | conv5x5 c64 d1 | conv7x7 c128 d2] head128
+[trial   3] REJECTED latency 3.07ms > 2.0ms  :: res28 stem24 relu [conv5x5 c48 d3 | dwsep3x3 c32 d3 | dwsep3x3 c128 d1] head384
+[trial   4] REJECTED latency 2.01ms > 2.0ms; size 5.03MB > 1.0MB  :: res24 stem16 relu6 [dwsep3x3 c24 d1 | conv7x7 c48 d2 | conv7x7 c96 d3] head128
+[trial   5] REJECTED latency 2.38ms > 2.0ms  :: res28 stem32 relu [conv7x7 c16 d3 | conv3x3 c64 d3 | dwsep7x7 c96 d3] head128
+[trial   6] REJECTED size 1.19MB > 1.0MB  :: res32 stem24 relu6 [conv3x3 c16 d1 | conv3x3 c32 d1 | conv3x3 c160 d2] head128
+[trial   7] REJECTED size 2.48MB > 1.0MB  :: res28 stem24 silu [dwsep7x7 c24 d2 | dwsep7x7 c96 d2 | conv7x7 c128 d1] head128
+[trial   8] REJECTED size 2.04MB > 1.0MB  :: res24 stem24 relu [conv5x5 c24 d3 | dwsep7x7 c96 d3 | conv5x5 c160 d1] head384
+[trial   9] REJECTED latency 2.04ms > 2.0ms; size 2.47MB > 1.0MB  :: res32 stem32 hardswish [dwsep3x3 c24 d2 | conv5x5 c32 d3 | conv5x5 c128 d2] head384
+[trial  10] val_acc=74.44  lat=1.33ms size=0.550MB mem=7.3MB :: res24 stem24 relu [conv3x3 c32 d1 | conv5x5 c32 d3 | dwsep3x3 c96 d3] head256
+[trial  11] val_acc=73.26  lat=1.32ms size=0.285MB mem=7.0MB :: res28 stem24 silu [dwsep3x3 c16 d2 | conv5x5 c32 d1 | dwsep3x3 c96 d3] head256
+[trial  12] REJECTED latency 2.36ms > 2.0ms; size 2.46MB > 1.0MB  :: res24 stem24 relu [conv3x3 c32 d1 | conv5x5 c96 d3 | dwsep5x5 c128 d3] head256
+[trial  13] val_acc=72.24  lat=1.12ms size=0.442MB mem=7.2MB :: res24 stem16 relu [conv3x3 c32 d1 | conv5x5 c32 d3 | dwsep3x3 c96 d2] head128
+[trial  14] val_acc=71.14  lat=1.40ms size=0.400MB mem=7.6MB :: res24 stem24 silu [conv3x3 c32 d2 | conv3x3 c32 d3 | dwsep3x3 c96 d3] head256
+[trial  15] REJECTED latency 2.32ms > 2.0ms; size 4.47MB > 1.0MB  :: res28 stem24 silu [conv3x3 c16 d2 | conv5x5 c32 d3 | conv7x7 c96 d3] head384
+[trial  16] REJECTED size 1.08MB > 1.0MB  :: res24 stem24 relu [conv3x3 c32 d1 | conv7x7 c32 d1 | conv3x3 c96 d3] head256
+[trial  17] val_acc=70.52  lat=1.42ms size=0.554MB mem=6.4MB :: res24 stem24 relu [conv5x5 c24 d1 | conv5x5 c32 d3 | dwsep3x3 c96 d3] head256
+[trial  18] REJECTED latency 2.03ms > 2.0ms  :: res28 stem24 silu [conv5x5 c16 d2 | conv5x5 c48 d3 | dwsep3x3 c96 d3] head256
+[trial  19] REJECTED latency 2.02ms > 2.0ms  :: res32 stem32 relu [conv3x3 c32 d1 | conv5x5 c48 d3 | dwsep3x3 c96 d3] head256
+[trial  20] val_acc=77.94  lat=1.72ms size=0.607MB mem=7.2MB :: res28 stem24 silu [conv3x3 c32 d3 | conv5x5 c32 d3 | dwsep3x3 c160 d1] head256
+[trial  21] REJECTED latency 2.12ms > 2.0ms  :: res28 stem16 silu [conv3x3 c32 d3 | dwsep5x5 c64 d3 | dwsep3x3 c160 d3] head256
+[trial  22] REJECTED latency 2.57ms > 2.0ms; size 2.33MB > 1.0MB  :: res24 stem24 silu [dwsep3x3 c32 d3 | conv5x5 c96 d3 | dwsep3x3 c160 d1] head256
+[trial  23] REJECTED latency 2.75ms > 2.0ms  :: res32 stem24 silu [conv3x3 c48 d3 | conv5x5 c32 d3 | dwsep3x3 c96 d2] head256
+[trial  24] val_acc=73.30  lat=1.29ms size=0.397MB mem=7.7MB :: res28 stem24 hardswish [conv3x3 c16 d2 | conv5x5 c32 d3 | dwsep3x3 c64 d2] head256
+[trial  25] val_acc=71.88  lat=1.29ms size=0.613MB mem=7.7MB :: res28 stem24 silu [conv3x3 c32 d1 | conv3x3 c64 d3 | dwsep3x3 c160 d1] head256
+[trial  26] val_acc=75.98  lat=1.66ms size=0.500MB mem=7.6MB :: res28 stem24 silu [conv3x3 c32 d3 | conv5x5 c32 d3 | dwsep3x3 c64 d1] head256
+[trial  27] val_acc=78.14  lat=1.91ms size=0.760MB mem=6.3MB :: res32 stem24 silu [conv3x3 c32 d3 | conv5x5 c32 d3 | conv3x3 c160 d1] head256
+[trial  28] REJECTED latency 2.27ms > 2.0ms; size 1.74MB > 1.0MB  :: res32 stem24 relu [conv3x3 c32 d3 | conv7x7 c32 d3 | conv7x7 c160 d1] head128
+[trial  29] REJECTED latency 3.65ms > 2.0ms; size 1.24MB > 1.0MB  :: res32 stem32 silu [conv7x7 c32 d3 | conv5x5 c32 d3 | conv3x3 c160 d1] head256
+[trial  30] REJECTED size 1.00MB > 1.0MB  :: res28 stem24 relu [conv3x3 c32 d3 | conv5x5 c64 d2 | dwsep3x3 c160 d1] head384
+[trial  31] REJECTED latency 2.05ms > 2.0ms  :: res28 stem24 relu [conv3x3 c48 d3 | conv5x5 c32 d3 | dwsep5x5 c64 d1] head256
+[trial  32] REJECTED latency 2.38ms > 2.0ms  :: res28 stem24 silu [conv5x5 c32 d3 | conv7x7 c32 d3 | dwsep3x3 c64 d1] head256
+[trial  33] val_acc=75.54  lat=1.34ms size=0.422MB mem=6.9MB :: res32 stem24 silu [conv3x3 c32 d2 | conv5x5 c32 d2 | conv3x3 c64 d1] head256
+[trial  34] val_acc=73.40  lat=1.40ms size=0.458MB mem=6.7MB :: res28 stem32 silu [conv3x3 c32 d1 | conv5x5 c32 d3 | dwsep3x3 c64 d2] head256
+[trial  35] REJECTED latency 2.19ms > 2.0ms; size 1.57MB > 1.0MB  :: res32 stem24 silu [dwsep3x3 c32 d3 | conv5x5 c32 d3 | conv3x3 c160 d2] head256
+[trial  36] val_acc=77.66  lat=1.52ms size=0.521MB mem=7.0MB :: res28 stem24 hardswish [conv3x3 c32 d3 | conv5x5 c32 d3 | conv3x3 c64 d1] head128
+[trial  37] val_acc=66.88  lat=1.75ms size=0.522MB mem=6.4MB :: res28 stem24 hardswish [conv7x7 c24 d3 | conv5x5 c32 d1 | conv3x3 c64 d1] head128
+[trial  38] REJECTED size 1.20MB > 1.0MB  :: res28 stem24 hardswish [conv3x3 c32 d1 | conv5x5 c64 d3 | conv3x3 c64 d1] head128
+[trial  39] REJECTED size 2.07MB > 1.0MB  :: res28 stem24 hardswish [conv3x3 c32 d2 | dwsep5x5 c32 d3 | conv7x7 c64 d3] head128
+
+BEST: {
+  "best_trial": 27,
+  "val_acc": 78.14,
+  "config": {
+    "activation": "silu",
+    "dropout": 0.0,
+    "head_channels": 256,
+    "resolution": 32,
+    "stages": [
+      {
+        "block": "conv",
+        "channels": 32,
+        "depth": 3,
+        "kernel": 3
+      },
+      {
+        "block": "conv",
+        "channels": 32,
+        "depth": 3,
+        "kernel": 5
+      },
+      {
+        "block": "conv",
+        "channels": 160,
+        "depth": 1,
+        "kernel": 3
+      }
+    ],
+    "stem_channels": 24
+  },
+  "hardware": {
+    "latency_ms": 1.913050000439398,
+    "size_mb": 0.759577751159668,
+    "peak_mem_mb": 6.3359375,
+    "params": 193666,
+    "mmacs": 51.849728
+  },
+  "constraints": {
+    "max_latency_ms": 2.0,
+    "max_size_mb": 1.0,
+    "max_peak_mem_mb": 64.0
+  },
+  "search_epochs_per_trial": 5,
+  "n_trials": 40,
+  "n_rejected": 25,
+  "search_minutes": 8.0,
+  "description": "res32 stem24 silu [conv3x3 c32 d3 | conv5x5 c32 d3 | conv3x3 c160 d1] head256"
+}

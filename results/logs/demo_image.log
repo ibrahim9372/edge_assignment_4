@@ -1,0 +1,18 @@
+PS> python -m inference.infer --ckpt checkpoints/kd/mobilenetv2_cifar100.pt checkpoints/kd/efficientnet_lite0_cifar100.pt checkpoints/kd/squeezenet_cifar100.pt --image samples/apple_cifar100_test9.png samples/bicycle_cifar100_test27.png --device cpu
+[kd/mobilenetv2_cifar100] samples/apple_cifar100_test9.png: pear 0.70, apple 0.29, orange 0.00, sweet_pepper 0.00, snail 0.00
+[kd/mobilenetv2_cifar100] samples/bicycle_cifar100_test27.png: bicycle 0.51, baby 0.42, table 0.04, boy 0.01, plate 0.01
+[kd/efficientnet_lite0_cifar100] samples/apple_cifar100_test9.png: apple 0.96, pear 0.04, sweet_pepper 0.00, orange 0.00, snail 0.00
+[kd/efficientnet_lite0_cifar100] samples/bicycle_cifar100_test27.png: bicycle 1.00, baby 0.00, table 0.00, worm 0.00, snake 0.00
+[kd/squeezenet_cifar100] samples/apple_cifar100_test9.png: apple 0.99, pear 0.01, sweet_pepper 0.00, orange 0.00, tulip 0.00
+[kd/squeezenet_cifar100] samples/bicycle_cifar100_test27.png: bicycle 1.00, snake 0.00, clock 0.00, motorcycle 0.00, can 0.00
+
+PS> python -m inference.infer_onnx --onnx onnx/nas/nas_best_cifar10.onnx --image samples/cat_cifar10_test0.png samples/ship_cifar10_test1.png samples/airplane_cifar10_test3.png
+ONNX Runtime 1.32.0 | CPUExecutionProvider | 4 thread(s)
+[nas/nas_best_cifar10] samples/cat_cifar10_test0.png: cat 1.00, dog 0.00, frog 0.00, bird 0.00, horse 0.00
+[nas/nas_best_cifar10] samples/ship_cifar10_test1.png: ship 0.99, automobile 0.01, airplane 0.00, truck 0.00, cat 0.00
+[nas/nas_best_cifar10] samples/airplane_cifar10_test3.png: airplane 0.78, ship 0.20, bird 0.01, truck 0.01, cat 0.00
+
+PS> python -m inference.infer_onnx --onnx onnx/kd/efficientnet_lite0_cifar100.onnx --image samples/apple_cifar100_test9.png samples/bicycle_cifar100_test27.png
+ONNX Runtime 1.32.0 | CPUExecutionProvider | 4 thread(s)
+[kd/efficientnet_lite0_cifar100] samples/apple_cifar100_test9.png: apple 0.96, pear 0.04, sweet_pepper 0.00, orange 0.00, snail 0.00
+[kd/efficientnet_lite0_cifar100] samples/bicycle_cifar100_test27.png: bicycle 1.00, baby 0.00, table 0.00, worm 0.00, snake 0.00

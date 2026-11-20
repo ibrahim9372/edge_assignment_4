@@ -64,7 +64,8 @@ def main():
     paths = all_checkpoints() if args.all else args.ckpt
     if not paths:
         ap.error("give --ckpt or --all")
-    print(f"{'model':40s} {'arch':20s} {'dataset':9s} {'top1 %':>7s} {'img/s':>9s}")
+    if args.testset:
+        print(f"{'model':40s} {'arch':20s} {'dataset':9s} {'top1 %':>7s} {'img/s':>9s}")
     for p in paths:
         pr = Predictor(p, args.device)
         for img in args.image:

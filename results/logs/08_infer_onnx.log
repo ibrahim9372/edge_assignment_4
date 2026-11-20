@@ -1,0 +1,8 @@
+ONNX Runtime 1.32.0 | CPUExecutionProvider | 4 thread(s)
+baseline/efficientnet_lite0_cifar100     cifar100  top1= 71.69%       640 img/s
+baseline/mobilenetv2_cifar100            cifar100  top1= 70.59%       726 img/s
+baseline/squeezenet_cifar100             cifar100  top1= 60.78%      3637 img/s
+kd/efficientnet_lite0_cifar100           cifar100  top1= 74.20%       650 img/s
+kd/mobilenetv2_cifar100                  cifar100  top1= 73.10%       717 img/s
+kd/squeezenet_cifar100                   cifar100  top1= 61.46%      3601 img/s
+nas/nas_best_cifar10                     cifar10   top1= 89.80%      2229 img/s

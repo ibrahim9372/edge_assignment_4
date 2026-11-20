@@ -1,0 +1,8 @@
+model                                    arch                 dataset    top1 %     img/s
+baseline/efficientnet_lite0_cifar100     efficientnet_lite0   cifar100    71.69      2616
+baseline/mobilenetv2_cifar100            mobilenetv2          cifar100    70.59      4180
+baseline/squeezenet_cifar100             squeezenet           cifar100    60.78     35190
+kd/efficientnet_lite0_cifar100           efficientnet_lite0   cifar100    74.20      7409
+kd/mobilenetv2_cifar100                  mobilenetv2          cifar100    73.10      8225
+kd/squeezenet_cifar100                   squeezenet           cifar100    61.46     36695
+nas/nas_best_cifar10                     nas                  cifar10     89.80     26979

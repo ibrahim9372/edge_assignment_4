@@ -1,0 +1,23 @@
+{
+  "final": {
+    "top1": 85.15,
+    "top5": 97.58,
+    "loss": 0.6464670288085937
+  },
+  "reloaded_fp16": {
+    "top1": 85.15,
+    "top5": 97.58,
+    "loss": 0.6464568237304688
+  },
+  "train_minutes": 10.2,
+  "args": {
+    "epochs": 15,
+    "lr": 0.05,
+    "bs": 128,
+    "wd": 0.0005,
+    "seed": 42,
+    "no_pretrained": false,
+    "out": "checkpoints/teacher/resnet50_cifar100.pt",
+    "smoke": false
+  }
+}

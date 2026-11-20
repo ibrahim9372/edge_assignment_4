@@ -1,0 +1,36 @@
+{
+  "config": {
+    "activation": "silu",
+    "dropout": 0.0,
+    "head_channels": 256,
+    "resolution": 32,
+    "stages": [
+      {
+        "block": "conv",
+        "channels": 32,
+        "depth": 3,
+        "kernel": 3
+      },
+      {
+        "block": "conv",
+        "channels": 32,
+        "depth": 3,
+        "kernel": 5
+      },
+      {
+        "block": "conv",
+        "channels": 160,
+        "depth": 1,
+        "kernel": 3
+      }
+    ],
+    "stem_channels": 24
+  },
+  "test": {
+    "top1": 89.8,
+    "top5": 99.66,
+    "loss": 0.31688326110839843
+  },
+  "epochs": 50,
+  "train_minutes": 7.2
+}

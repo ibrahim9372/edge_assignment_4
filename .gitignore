@@ -9,3 +9,5 @@ results/smoke/
 checkpoints/smoke/
 Assignment 4.pdf
 results_run_all_console.txt
+console_q*.txt
+report/Technical_Report.html

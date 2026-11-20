@@ -1,0 +1,48 @@
+{
+  "best_trial": 27,
+  "val_acc": 78.14,
+  "config": {
+    "activation": "silu",
+    "dropout": 0.0,
+    "head_channels": 256,
+    "resolution": 32,
+    "stages": [
+      {
+        "block": "conv",
+        "channels": 32,
+        "depth": 3,
+        "kernel": 3
+      },
+      {
+        "block": "conv",
+        "channels": 32,
+        "depth": 3,
+        "kernel": 5
+      },
+      {
+        "block": "conv",
+        "channels": 160,
+        "depth": 1,
+        "kernel": 3
+      }
+    ],
+    "stem_channels": 24
+  },
+  "hardware": {
+    "latency_ms": 1.913050000439398,
+    "size_mb": 0.759577751159668,
+    "peak_mem_mb": 6.3359375,
+    "params": 193666,
+    "mmacs": 51.849728
+  },
+  "constraints": {
+    "max_latency_ms": 2.0,
+    "max_size_mb": 1.0,
+    "max_peak_mem_mb": 64.0
+  },
+  "search_epochs_per_trial": 5,
+  "n_trials": 40,
+  "n_rejected": 25,
+  "search_minutes": 8.0,
+  "description": "res32 stem24 silu [conv3x3 c32 d3 | conv5x5 c32 d3 | conv3x3 c160 d1] head256"
+}
