@@ -100,4 +100,6 @@ class GPULoader:
                 x = F.interpolate(x, size=(self.res, self.res), mode="bilinear",
                                   align_corners=False, antialias=True)
             x = (x - self.mean) / self.std
-            yield x.contiguous(memory_format=torch.channels_last), self.y[b]
+            # .contiguous(): the crop above yields an NHWC-strided tensor; cuDNN on this Turing GPU
+            # was ~15x slower with channels_last layout, so force standard NCHW memory layout.
+            yield x.contiguous(), self.y[b]

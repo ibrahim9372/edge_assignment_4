@@ -42,7 +42,7 @@ def main():
     if not args.no_pretrained:
         missing, _ = load_imagenet_pretrained(model)
         print(f"Loaded ImageNet weights; newly initialised: {missing}")
-    model = model.cuda().to(memory_format=torch.channels_last)
+    model = model.cuda()
     print(f"ResNet-50 params: {count_params(model) / 1e6:.2f} M")
 
     t0 = time.time()
@@ -55,7 +55,6 @@ def main():
                     args=vars(args), half=True)
     # Verify the fp16-stored checkpoint still has the same accuracy.
     reloaded, _ = load_checkpoint(args.out, "cuda")
-    reloaded = reloaded.to(memory_format=torch.channels_last)
     m2 = evaluate(reloaded, test_loader)
     print(f"Final teacher top1={metrics['top1']:.2f}  (reloaded fp16 ckpt top1={m2['top1']:.2f})")
     write_json("results/q1/teacher_summary.json",

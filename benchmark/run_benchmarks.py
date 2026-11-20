@@ -47,7 +47,7 @@ def main():
         name = model_name(ck)
         group = name.split("/")[0]
         print(f"--- {name}", flush=True)
-        acc = evaluate(model.to(memory_format=torch.channels_last),
+        acc = evaluate(model,
                        GPULoader(*test[ds], 500, ds, train=False, resolution=r))
         row = {"model": name, "group": group, "arch": meta["arch"], "dataset": ds, "resolution": r,
                "top1": round(acc["top1"], 2), "top5": round(acc["top5"], 2),

@@ -87,7 +87,7 @@ def main():
             res = cfg["resolution"]
             tl = GPULoader(xtr, ytr, args.bs, "cifar10", train=True, resolution=res, drop_last=True)
             vl = GPULoader(xval, yval, 1000, "cifar10", train=False, resolution=res)
-            model = model.cuda().to(memory_format=torch.channels_last)
+            model = model.cuda()
             m = fit(model, CECriterion(), tl, vl, args.epochs, args.lr, 5e-4, verbose=False)
             acc = m["top1"]
             seen[key] = acc

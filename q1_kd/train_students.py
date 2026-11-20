@@ -29,7 +29,7 @@ def train_one(arch, args, data, teacher=None):
     set_seed(args.seed)
     train_loader = GPULoader(xtr, ytr, args.bs, "cifar100", train=True, drop_last=True)
     test_loader = GPULoader(xte, yte, 500, "cifar100", train=False)
-    model = STUDENTS[arch](num_classes=100).cuda().to(memory_format=torch.channels_last)
+    model = STUDENTS[arch](num_classes=100).cuda()
 
     if args.mode == "kd":
         criterion = KDCriterion(teacher, model.feature_channels, teacher.feature_channels,
@@ -78,7 +78,6 @@ def main():
     teacher = None
     if args.mode == "kd":
         teacher, _ = load_checkpoint(args.teacher, "cuda")
-        teacher = teacher.to(memory_format=torch.channels_last)
 
     archs = list(STUDENTS) if args.arch == "all" else [args.arch]
     summary = [train_one(a, args, data, teacher) for a in archs]

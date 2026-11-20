@@ -39,7 +39,7 @@ def main():
     res = cfg["resolution"]
     tl = GPULoader(xtr, ytr, args.bs, "cifar10", train=True, resolution=res, drop_last=True)
     vl = GPULoader(xte, yte, 1000, "cifar10", train=False, resolution=res)
-    model = build_from_config(cfg, 10).cuda().to(memory_format=torch.channels_last)
+    model = build_from_config(cfg, 10).cuda()
     print(f"params={count_params(model)/1e6:.3f}M  MMACs={count_macs(model, (1, 3, res, res))/1e6:.1f}")
 
     t0 = time.time()
